@@ -31,7 +31,7 @@ type userService struct {
 	producer *interfaces.ProducerHandler
 }
 
-func (s userService) Register(input dto.UserSignup) error {
+func (s *userService) Register(input dto.UserSignup) error {
 	// hash password
 	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(input.Password), bcrypt.DefaultCost)
 
@@ -58,7 +58,7 @@ func (s userService) Register(input dto.UserSignup) error {
 	return nil
 }
 
-func (s userService) Login(email, password string) (*domain.User, error) {
+func (s *userService) Login(email, password string) (*domain.User, error) {
 	// find the existing user
 	user, err := s.repo.FindUserByEmail(email)
 
@@ -75,7 +75,7 @@ func (s userService) Login(email, password string) (*domain.User, error) {
 	return user, nil
 }
 
-func (s userService) ForgotPassword(email string) error {
+func (s *userService) ForgotPassword(email string) error {
 	// find existing user
 	user, err := s.repo.FindUserByEmail(email)
 
@@ -105,7 +105,7 @@ func (s userService) ForgotPassword(email string) error {
 	return nil
 }
 
-func (s userService) SetPassword(token, password string) error {
+func (s *userService) SetPassword(token, password string) error {
 	user, err := s.repo.FindUserByResetToken(token)
 	if err != nil {
 		log.Printf("invalid or expired token: %v", token)
@@ -131,7 +131,7 @@ func (s userService) SetPassword(token, password string) error {
 	return nil
 }
 
-func (s userService) CreateProfile(profile dto.UserProfile) error {
+func (s *userService) CreateProfile(profile dto.UserProfile) error {
 
 	user, err := s.repo.FindUserById(profile.UserID)
 	if err != nil {
@@ -161,7 +161,7 @@ func (s userService) CreateProfile(profile dto.UserProfile) error {
 	return nil
 }
 
-func (s userService) GetProfile(userID int) (*domain.User, error) {
+func (s *userService) GetProfile(userID int) (*domain.User, error) {
 	profile, err := s.repo.FindUserById(userID)
 	if err != nil {
 		log.Printf("failed to find user: %v", err)
@@ -171,7 +171,7 @@ func (s userService) GetProfile(userID int) (*domain.User, error) {
 	return profile, nil
 }
 
-func (s userService) Authenticate(c *fiber.Ctx) (*domain.User, error) {
+func (s *userService) Authenticate(c *fiber.Ctx) (*domain.User, error) {
 	user := c.Locals("userID")
 
 	authUser, err := s.repo.FindUserById(user.(int))
