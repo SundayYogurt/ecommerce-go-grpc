@@ -5,7 +5,8 @@ type UserProfile struct {
 	FirstName string  `json:"first_name"`
 	LastName  string  `json:"last_name"`
 	Email     string  `json:"email"`
-	Phone     Address `json:"phone"`
+	Phone     string  `json:"phone"`
+	Address   Address `json:"address"`
 }
 
 type Address struct {
