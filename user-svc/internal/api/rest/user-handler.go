@@ -122,7 +122,7 @@ func (h *UserHandler) CreateProfile(ctx *fiber.Ctx) error {
 }
 
 func (h *UserHandler) GetProfile(ctx *fiber.Ctx) error {
-	userId := ctx.Locals("user_id").(int)
+	userId := ctx.Locals("userID").(int)
 	profile, err := h.svc.GetProfile(userId)
 	if err != nil {
 		return utils.RespondError(ctx, fiber.StatusInternalServerError, err.Error())
@@ -144,7 +144,7 @@ func (h *UserHandler) Auth(ctx *fiber.Ctx) error {
 
 func (h *UserHandler) Me(ctx *fiber.Ctx) error {
 
-	userID := ctx.Locals("user_id").(int)
+	userID := ctx.Locals("userID").(int)
 
 	user, err := h.svc.GetProfile(userID)
 	if err != nil {
