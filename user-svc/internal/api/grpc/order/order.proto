@@ -1,0 +1,27 @@
+syntax = "proto3";
+
+package order;
+
+option go_package = "internal/api/grpc/order";
+
+import "google/protobuf/timestamp.proto";
+
+service OrderService {
+  rpc GetOrders(GetOrderRequest) returns (GetOrderResponse);
+}
+
+message GetOrderRequest {
+  int64 userId = 1;
+}
+
+message GetOrderResponse {
+  repeated OrderItem orders = 1;
+}
+
+message OrderItem {
+  int64 id = 1;
+  string status = 2;
+  float amount = 3;
+  google.protobuf.Timestamp createdAt = 4;
+  google.protobuf.Timestamp updatedAt = 5;
+}

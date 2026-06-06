@@ -1,0 +1,41 @@
+services:
+  user_db_server:
+    image: "postgres:14.0"
+    ports:
+      - "5441:5432"
+    deploy:
+      mode: replicated
+      replicas: 1
+    environment:
+      POSTGRES_USER: user_microservice
+      POSTGRES_PASSWORD:  user_microservice_password
+      POSTGRES_DB: user_microservice
+    volumes:
+      - ./db-data/user_db_server/:/var/lib/postgresql/data
+
+    #UserService
+    #Order Service
+
+  Kafka:
+    image: confluentinc/cp-kafka:latest
+    container_name: kafka
+    ports:
+      - "9092:9092" # Kafka client connections
+      - "9093:9093" # kafka controller connections
+    environment:
+      KAFKA_NODE_ID: 1
+      KAFKA_PROCESS_ROLES: controller,broker
+      KAFKA_LISTENERS: PLAINTEXT://0.0.0.0:9092,CONTROLLER://0.0.0.0:9093
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://localhost:9092
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: PLAINTEXT:PLAINTEXT,CONTROLLER:PLAINTEXT
+      KAFKA_CONTROLLER_QUORUM_VOTERS: 1@localhost:9093
+      KAFKA_CONTROLLER_LISTENER_NAMES: CONTROLLER
+      KAFKA_LOG_DIRS: /var/lib/kafka/data
+      KAFKA_AUTO_CREATE_TOPICS_ENABLE: "true"
+      KAFKA_DELETE_TOPIC_ENABLE: "true"
+      CLUSTER_ID: jV9Hk03yT1Wx79bJ8JQ2zA
+    volumes:
+      - kafka_data:/var/lib/kafka/data\
+
+volumes:
+  kafka_data:
