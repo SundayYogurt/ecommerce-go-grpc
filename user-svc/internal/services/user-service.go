@@ -22,13 +22,14 @@ type UserService interface {
 	Authenticate(c *fiber.Ctx) (*domain.User, error)
 }
 
-func NewUserService(repo repository.UserRepository, producer *interfaces.ProducerHandler) UserService {
+// NewUserService dependency injection
+func NewUserService(repo repository.UserRepository, producer interfaces.ProducerHandler) UserService {
 	return &userService{repo: repo, producer: producer}
 }
 
 type userService struct {
 	repo     repository.UserRepository
-	producer *interfaces.ProducerHandler
+	producer interfaces.ProducerHandler
 }
 
 func (s *userService) Register(input dto.UserSignup) error {

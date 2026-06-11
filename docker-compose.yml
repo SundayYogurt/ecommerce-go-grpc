@@ -14,6 +14,20 @@ services:
       - ./db-data/user_db_server/:/var/lib/postgresql/data
 
     #UserService
+  product_db_server:
+    image: "postgres:14.0"
+    ports:
+      - "5442:5432"
+    deploy:
+      mode: replicated
+      replicas: 1
+    environment:
+      POSTGRES_USER: product_microservice
+      POSTGRES_PASSWORD: product_microservice_password
+      POSTGRES_DB: product_microservice
+    volumes:
+      - ./db-data/product_db_server/:/var/lib/postgresql/data
+
     #Order Service
 
   Kafka:

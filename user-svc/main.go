@@ -21,19 +21,21 @@ func main() {
 	// Load config
 	cfg := config.LoadConfig()
 
+	// connect our database & run migrations
+
 	kafkaProducer := queue.NewProducer(cfg.KafkaBroker, cfg.KafkaTopic)
 	log.Printf("Kafka Producer created %v", kafkaProducer)
 
 	orderServiceClient, err := order.NewOrderServiceGRPCClient("localhost:50051")
 	if err != nil {
-		log.Fatalf("Failed to conneect to order service: &v", err)
+		log.Fatalf("Failed to connect to order service: %v", err)
 	}
 
 	log.Printf("Order Service created %v", orderServiceClient)
 
 	app.Get("/", HealthCheck)
 
-	app.Listen("localhost:9000")
+	app.Listen(cfg.ServerPort)
 }
 
 func HealthCheck(ctx *fiber.Ctx) error {

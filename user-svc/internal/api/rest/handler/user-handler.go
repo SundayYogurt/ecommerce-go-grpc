@@ -1,4 +1,4 @@
-package rest
+package handler
 
 import (
 	"github.com/gofiber/fiber/v2"
@@ -111,14 +111,14 @@ func (h *UserHandler) CreateProfile(ctx *fiber.Ctx) error {
 		return utils.RespondError(ctx, fiber.StatusBadRequest, "invalid inputs")
 	}
 
-	userID := ctx.Locals("user_id")
+	userID := ctx.Locals("userID")
 	reqBody.UserID = userID.(int)
 
 	if err := h.svc.CreateProfile(reqBody); err != nil {
 		return utils.RespondError(ctx, fiber.StatusInternalServerError, err.Error())
 	}
 
-	return utils.RespondSuccess(ctx, fiber.StatusOK, "profile created successfully")
+	return utils.RespondSuccess(ctx, fiber.StatusCreated, "profile created successfully")
 }
 
 func (h *UserHandler) GetProfile(ctx *fiber.Ctx) error {
