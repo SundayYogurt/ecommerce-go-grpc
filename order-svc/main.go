@@ -1,21 +1,30 @@
 package main
 
 import (
-	"github.com/gofiber/fiber/v2"
-	"github.com/gofiber/fiber/v2/middleware/cors"
+	"log"
+
+	"github.com/sundayyogurt/order_service/config"
+	"github.com/sundayyogurt/order_service/infra/db/db"
+	"github.com/sundayyogurt/order_service/internal/api/rest"
+	"github.com/sundayyogurt/order_service/internal/repository"
+	"github.com/sundayyogurt/order_service/internal/services"
 )
 
 func main() {
 
-	app := fiber.New()
-	app.Use(cors.New(cors.Config{
-		AllowOrigins: "*", // allow all origins
-		AllowHeaders: "Content-Type, Accept, Authorization",
-	}))
+	cfg := config.LoadConfig()
 
-	app.Get("/", func(c *fiber.Ctx) error {
-		return c.SendString("Hello, World!")
-	})
+	dbConn, err := db.Connect(cfg.DatabaseDSN)
+	if err != nil {
+		log.Fatalf("Error connecting to database: %v", err)
+	}
 
-	app.Listen("localhost:9000")
+	cartRepository := repository.NewCartRepository(dbConn)
+	cartService := services.NewCartService(cartRepository)
+
+	server := rest.NewServer(cfg.ServerPort, cartService, dbConn)
+	err = server.Start()
+	if err != nil {
+		log.Fatalf("Error starting server: %v", err)
+	}
 }
